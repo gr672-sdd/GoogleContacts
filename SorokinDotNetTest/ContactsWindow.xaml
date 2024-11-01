@@ -1,0 +1,120 @@
+﻿<Window x:Class="SorokinDotNetTest.ContactsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SorokinDotNetTest"
+        mc:Ignorable="d"
+        Title="Контакты" Height="800" Width="1350" FontFamily="Ebrima" FontSize="18" WindowStartupLocation="CenterScreen"
+        DataContext="{Binding ContactsWindowViewModel, Source={StaticResource locator}}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.2*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.6*"/>
+            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="0.6*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="0.6*"/>
+            <RowDefinition Height="0.4*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.05*"/>
+            <ColumnDefinition Width="0.48*"/>
+            <ColumnDefinition Width="0.1*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Image Source="pack://application:,,,/Resources/Frost.jpg" Grid.ColumnSpan="8" Grid.RowSpan="10" Stretch="Fill"/>
+
+        <!-- Привязка списка контактов к коллекции из ViewModel -->
+        <ListView ItemsSource="{Binding PeopleList}" SelectedItem="{Binding SelectedContact}"
+                  Grid.Column="3" Grid.ColumnSpan="4" Grid.Row="4" Grid.RowSpan="4" Background="Transparent">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <Button Command="{Binding DataContext.EditContactCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                CommandParameter="{Binding}" Background="Transparent" Foreground="White">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="350"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition MinWidth="250"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="{Binding Photos[0].Url}" Width="50" Height="50" Grid.Column="0"/>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Names[0].GivenName}" Grid.Column="0" Margin="10,0,0,0" />
+                                            <TextBlock Text="{Binding Names[0].FamilyName}" Grid.Column="1" Margin="10,0,0,0" />
+                                        </Grid>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding EmailAddresses[0].Value}" Grid.Column="2" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding PhoneNumbers[0].Value}" Grid.Column="3" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                    <StackPanel Grid.Column="4" VerticalAlignment="Center">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Organizations[0].Name}" Grid.Column="0" Margin="10,0,0,0"/>
+                                            <TextBlock Text="{Binding Organizations[0].Title}" Grid.Column="1" Margin="10,0,0,0"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!-- Кнопка создания нового контакта -->
+        <Button x:Name="butCreateContact" Content="Новый контакт" 
+                Command="{Binding CreateContactCommand}" 
+                Grid.Row="4" Grid.Column="1" Background="Transparent" Foreground="White"/>
+
+        <!-- Кнопка закрытия окна -->
+        <Button x:Name="butClose" Content="Назад"  
+                Command="{Binding CloseCommand}" 
+                Grid.Row="7" Grid.Column="1" Background="Transparent" Foreground="White"/>
+
+        <Image Source="pack://application:,,,/Resources/seartch.png" Grid.Column="2" Grid.Row="1"/>
+
+        <!-- Поле поиска -->
+        <TextBox x:Name="tbSearch" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
+                 Grid.Row="1" Grid.Column="3">
+            <TextBox.Style>
+                <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                    <Style.Resources>
+                        <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                            <VisualBrush.Visual>
+                                <Label Content="Поиск" Foreground="LightGray" FontSize="20"/>
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </Style.Resources>
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                        </Trigger>
+                        <Trigger Property="Text" Value="{x:Null}">
+                            <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter Property="Background" Value="White" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+    </Grid>
+</Window>
